@@ -5,7 +5,7 @@ public class Graphics extends PApplet {
     // store the instance of the maze generator
     MazeGenerator maze;
 
-    // constructor that takes a instance of the maze generator
+    // constructor that takes an instance of the maze generator
     Graphics(MazeGenerator maze) {
         this.maze = maze;
     }
@@ -13,12 +13,15 @@ public class Graphics extends PApplet {
     // set some colors for the GUI
     int tileColor = unhex("FF000000");
     int wallColor = unhex("FFFFFFFF");
-    int startColor = unhex("FF009900");
-    int endColor = unhex("FF990000");
+    int startColor = unhex("FF00FF00");
+    int endColor = unhex("FFFFFF00");
 
     // set the sizes of the tiles and walls (may change to set with arguments)
     int tileSize = 20;
     int wallStrokeSize = 1;
+
+    int pathColor = unhex("FF00FF00");
+    int pathStrokeSize = 3;
 
     // set the timer for graphics display
     double graphicsDisplayElapsedTime = 0;
@@ -64,7 +67,7 @@ public class Graphics extends PApplet {
                 else if (t.x == maze.exitX && t.y == maze.exitY) {
                     fill(endColor);
                     // else fill by gradient proportional to distance from exit
-                } else fill(0, 0, 255 - ((float)t.stepsToExit / (float)maze.highestStackSize) * 255);
+                } else fill(((float)t.stepsToExit / (float)maze.highestStackSize) * 200, 0, 200 - ((float)t.stepsToExit / (float)maze.highestStackSize) * 200);
                 // draw the tile
                 rect(t.x * tileSize, t.y * tileSize, tileSize, tileSize);
                 // if uncommented, will displace the steps to exit
@@ -93,8 +96,9 @@ public class Graphics extends PApplet {
                 }
             }
         }
-        // set the stroke to red for the path
-        stroke(255, 0, 0);
+        // set the stroke for the path
+        stroke(pathColor);
+        strokeWeight(pathStrokeSize);
         // store the previous tile
         Tile previous = maze.maze[maze.startX][maze.startY];
         // set the shortest path of the maze (maybe will change to return the stack)
@@ -104,7 +108,7 @@ public class Graphics extends PApplet {
             // save the current tile
             Tile t = maze.shortestPath.elementAt(i);
             // draw a line from the center of the previous tile to the center of the next tile
-            line(t.x * tileSize + tileSize / 2, t.y * tileSize + tileSize / 2, previous.x * tileSize + tileSize / 2, previous.y * tileSize + tileSize / 2);
+            line(t.x * tileSize + tileSize / 2f, t.y * tileSize + tileSize / 2f, previous.x * tileSize + tileSize / 2f, previous.y * tileSize + tileSize / 2f);
             // set the previous tile to the current tile
             previous = t;
         }
