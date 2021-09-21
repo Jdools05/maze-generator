@@ -8,8 +8,8 @@ public class MazeGenerator {
     Random random = new Random();
 
     // store the width and height of maze
-    int mazeWidth = 20;
-    int mazeHeight = 20;
+    int mazeWidth = 50;
+    int mazeHeight = 50;
 
     // store the position of the start
     int startX = 0;

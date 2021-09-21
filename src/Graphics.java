@@ -8,6 +8,7 @@ public class Graphics extends PApplet {
     // constructor that takes an instance of the maze generator
     Graphics(MazeGenerator maze) {
         this.maze = maze;
+        previousStepTile = maze.maze[maze.startX][maze.startY];
     }
 
     // set some colors for the GUI
@@ -23,15 +24,20 @@ public class Graphics extends PApplet {
     int pathColor = unhex("FF00FF00");
     int pathStrokeSize = 3;
 
+    // holds the steps for the animation
+    int stepCounter = 0;
+    int reloadCounter = 0;
+    Tile previousStepTile;
+
     // set the timer for graphics display
     double graphicsDisplayElapsedTime = 0;
+
+    boolean shouldDrawMaze = true;
 
     // called before the first frame
     public void settings() {
         // set up canvas size
         size(tileSize * maze.mazeWidth + 2, tileSize * maze.mazeHeight + 2);
-        // prevent redraw of canvas
-        noLoop();
     }
 
     // check key presses
@@ -39,15 +45,18 @@ public class Graphics extends PApplet {
         if (key == 'R' || key == 'r') {
             // reload the maze
             maze.reload();
+            shouldDrawMaze = true;
+            stepCounter = 0;
+            previousStepTile = maze.maze[maze.startX][maze.startY];
         }
         // redraws on key press to help identify bugs
         redraw();
     }
 
-    // main function for drawing
-    public void draw() {
-        // setup timer
-        long graphicsTimeStart = System.nanoTime();
+    private void drawMaze() {
+
+        // set the shortest path of the maze (maybe will change to return the stack)
+        maze.findShortestPath();
 
         // set GUI for colors and sizes
         background(tileColor);
@@ -96,32 +105,35 @@ public class Graphics extends PApplet {
                 }
             }
         }
+        shouldDrawMaze = false;
+    }
+
+    // main function for drawing
+    public void draw() {
+
+        if (shouldDrawMaze) drawMaze();
         // set the stroke for the path
         stroke(pathColor);
         strokeWeight(pathStrokeSize);
-        // store the previous tile
-        Tile previous = maze.maze[maze.startX][maze.startY];
-        // set the shortest path of the maze (maybe will change to return the stack)
-        maze.findShortestPath();
-        // for each tile in the stack
-        for (int i = 0; i < maze.shortestPath.size(); i++) {
-            // save the current tile
-            Tile t = maze.shortestPath.elementAt(i);
-            // draw a line from the center of the previous tile to the center of the next tile
-            line(t.x * tileSize + tileSize / 2f, t.y * tileSize + tileSize / 2f, previous.x * tileSize + tileSize / 2f, previous.y * tileSize + tileSize / 2f);
-            // set the previous tile to the current tile
-            previous = t;
+
+
+        Tile t = maze.shortestPath.elementAt(stepCounter);
+        // draw a line from the center of the previous tile to the center of the next tile
+        line(t.x * tileSize + tileSize / 2f, t.y * tileSize + tileSize / 2f, previousStepTile.x * tileSize + tileSize / 2f, previousStepTile.y * tileSize + tileSize / 2f);
+        // set the previous tile to the current tile
+
+        if (stepCounter < maze.shortestPath.size() - 1) {
+            previousStepTile = t;
+            stepCounter++;
+        } else {
+            reloadCounter++;
         }
-
-        // measure the time it took to display
-        graphicsDisplayElapsedTime = System.nanoTime() - graphicsTimeStart;
-
-        // format the messages
-        String canvasSizeMessage = String.format("Size of canvas %spx X %spx", width, height);
-        String graphicsDisplaceMessage = String.format("Elapsed graphics display time in milliseconds: %sms", graphicsDisplayElapsedTime / 1000000);
-
-        // output the messages
-        System.out.println(canvasSizeMessage);
-        System.out.println(graphicsDisplaceMessage);
+        if (reloadCounter == 100) {
+            reloadCounter = 0;
+            maze.reload();
+            shouldDrawMaze = true;
+            stepCounter = 0;
+            previousStepTile = maze.maze[maze.startX][maze.startY];
+        }
     }
 }
