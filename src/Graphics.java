@@ -15,11 +15,14 @@ public class Graphics extends PApplet {
     int tileColor = unhex("FF000000");
     int wallColor = unhex("FFFFFFFF");
     int startColor = unhex("FF00FF00");
-    int endColor = unhex("FFFFFF00");
+    int endColor = unhex("FF392F5A");
+    int pathColor = unhex("FFF61067");
+    int farAwayColor = unhex("FF5CAB7D");
+    int closeToColor = unhex("FFFFE66D");
 
     // set the sizes of the tiles and walls (may change to set with arguments)
-    int tileSize = 20;
-    int wallStrokeSize = 1;
+
+    int wallStrokeSize = 3;
 
     int pathColor = unhex("FF00FF00");
     int pathStrokeSize = 3;
@@ -36,8 +39,12 @@ public class Graphics extends PApplet {
 
     // called before the first frame
     public void settings() {
+
         // set up canvas size
-        size(tileSize * maze.mazeWidth + 2, tileSize * maze.mazeHeight + 2);
+        size(maze.tileSize * maze.mazeWidth + 2, maze.tileSize * maze.mazeHeight + 2);
+
+        fullScreen();
+
     }
 
     // check key presses
@@ -76,9 +83,12 @@ public class Graphics extends PApplet {
                 else if (t.x == maze.exitX && t.y == maze.exitY) {
                     fill(endColor);
                     // else fill by gradient proportional to distance from exit
-                } else fill(((float)t.stepsToExit / (float)maze.highestStackSize) * 200, 0, 200 - ((float)t.stepsToExit / (float)maze.highestStackSize) * 200);
+                    // old code: ((float)t.stepsToExit / (float)maze.highestStackSize) * 200, 0, 200 - ((float)t.stepsToExit / (float)maze.highestStackSize) * 200
+                } else {
+                    fill(lerpColor(closeToColor, farAwayColor, (float)t.stepsToExit / (float)maze.highestStackSize));
+                };
                 // draw the tile
-                rect(t.x * tileSize, t.y * tileSize, tileSize, tileSize);
+                rect(t.x * maze.tileSize, t.y * maze.tileSize, maze.tileSize, maze.tileSize);
                 // if uncommented, will displace the steps to exit
 //                fill(255);
 //                text(t.stepsToExit, t.x * tileSize + 3, t.y * tileSize + 15);
@@ -90,16 +100,16 @@ public class Graphics extends PApplet {
                     // draw a line for the wall based off of the directions
                     switch (dir) {
                         case UP:
-                            line(t.x * tileSize, t.y * tileSize, t.x * tileSize + tileSize, t.y * tileSize);
+                            line(t.x * maze.tileSize, t.y *maze.tileSize, t.x *maze.tileSize +maze.tileSize, t.y *maze.tileSize);
                             break;
                         case DOWN:
-                            line(t.x * tileSize, t.y * tileSize + tileSize, t.x * tileSize + tileSize, t.y * tileSize + tileSize);
+                            line(t.x *maze.tileSize, t.y *maze.tileSize +maze.tileSize, t.x *maze.tileSize +maze.tileSize, t.y *maze.tileSize +maze.tileSize);
                             break;
                         case LEFT:
-                            line(t.x * tileSize, t.y * tileSize, t.x * tileSize, t.y * tileSize + tileSize);
+                            line(t.x *maze.tileSize, t.y *maze.tileSize, t.x *maze.tileSize, t.y *maze.tileSize + maze.tileSize);
                             break;
                         case RIGHT:
-                            line(t.x * tileSize + tileSize, t.y * tileSize, t.x * tileSize + tileSize, t.y * tileSize + tileSize);
+                            line(t.x *maze.tileSize +maze.tileSize, t.y *maze.tileSize, t.x *maze.tileSize +maze.tileSize, t.y * maze.tileSize + maze.tileSize);
                             break;
                     }
                 }
@@ -119,7 +129,7 @@ public class Graphics extends PApplet {
 
         Tile t = maze.shortestPath.elementAt(stepCounter);
         // draw a line from the center of the previous tile to the center of the next tile
-        line(t.x * tileSize + tileSize / 2f, t.y * tileSize + tileSize / 2f, previousStepTile.x * tileSize + tileSize / 2f, previousStepTile.y * tileSize + tileSize / 2f);
+        line(t.x * maze.tileSize + maze.tileSize / 2f, t.y * maze.tileSize + maze.tileSize / 2f, previousStepTile.x * maze.tileSize + maze.tileSize / 2f, previousStepTile.y * maze.tileSize + maze.tileSize / 2f);
         // set the previous tile to the current tile
 
         if (stepCounter < maze.shortestPath.size() - 1) {

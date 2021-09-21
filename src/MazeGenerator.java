@@ -1,11 +1,18 @@
 import processing.core.PApplet;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MazeGenerator {
     // hold the random object
     Random random = new Random();
+
+    // store the tile size
+    int tileSize = random.nextInt(40) + 20;
+
+    Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
     // store the width and height of maze
     int mazeWidth = 50;
