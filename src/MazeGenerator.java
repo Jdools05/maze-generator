@@ -80,7 +80,7 @@ public class MazeGenerator {
         // save a counter to prevent infinite loops (shouldn't have to, but you know)
         int counter = 0;
         // loop till pointer is on exit
-        while (pointerX != exitX && pointerY != exitY) {
+        while (!(pointerX == exitX && pointerY == exitY)) {
             // get the neighboring tiles
             List<Tile> neighbors = getNeighbors(pointerX, pointerY);
 

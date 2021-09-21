@@ -93,7 +93,6 @@ public class Graphics extends PApplet {
                 }
             }
         }
-        // ISSUES BEGIN HERE
         // set the stroke to red for the path
         stroke(255, 0, 0);
         // store the previous tile
@@ -109,8 +108,6 @@ public class Graphics extends PApplet {
             // set the previous tile to the current tile
             previous = t;
         }
-
-        // ISSUES END HERE
 
         // measure the time it took to display
         graphicsDisplayElapsedTime = System.nanoTime() - graphicsTimeStart;
