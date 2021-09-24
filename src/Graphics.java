@@ -1,5 +1,7 @@
 import processing.core.PApplet;
 
+import java.text.DecimalFormat;
+
 public class Graphics extends PApplet {
 
     // store the instance of the maze generator
@@ -36,6 +38,9 @@ public class Graphics extends PApplet {
     double graphicsDisplayElapsedTime = 0;
 
     boolean shouldDrawMaze = true;
+    boolean paused = false;
+
+    DecimalFormat numberFormatter = new DecimalFormat("#.00");
 
     // called before the first frame
     public void settings() {
@@ -120,6 +125,37 @@ public class Graphics extends PApplet {
 
     // main function for drawing
     public void draw() {
+        int tileCount = maze.mazeHeight * maze.mazeWidth;
+        double totalPathPercentage = (maze.shortestPath.size() / (double) tileCount);
+
+
+        // reset the display bar
+        push();
+        fill(tileColor);
+        noStroke();
+        rect(0, height-maze.bottomBarHeight, width, height);
+        pop();
+
+        // displays the total tile count
+        textSize(45);
+        fill(0, 0, 0);
+        text(String.format("Steps: %s", stepCounter), 10, height - 20);
+
+        //display the total amount of tiles
+        textSize(45);
+        fill(0, 0, 0);
+        text(String.format("Total Tiles: %s", tileCount), 270, height - 20);
+        //display the total percentage of the maze taken up by the path
+        textSize(45);
+        fill(0, 0, 0);
+        text(String.format("Percent Maze Traveled: %s%%", numberFormatter.format(totalPathPercentage * 100)), 700, height - 20);
+
+        // displays the progress bar
+        fill(0, 0, 0);
+        noStroke();
+        rect(1500, height - 50, 398, 40);
+        fill(0, 255, 0);
+        rect(1500, height - 50, 400 * (stepCounter / (float)maze.shortestPath.size()), 40);
 
         if (shouldDrawMaze) drawMaze();
         // set the stroke for the path

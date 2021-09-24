@@ -11,6 +11,7 @@ public class MazeGenerator {
 
     // store the tile size
     int tileSize = random.nextInt(40) + 20;
+    int bottomBarHeight = 60;
 
     Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
