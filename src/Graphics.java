@@ -14,19 +14,18 @@ public class Graphics extends PApplet {
     }
 
     // set some colors for the GUI
-    int tileColor = unhex("FF000000");
-    int wallColor = unhex("FFFFFFFF");
+    int tileColor = unhex("FF587B74");
+    int wallColor = unhex("FF2C2C34");
     int startColor = unhex("FF00FF00");
-    int endColor = unhex("FF392F5A");
-    int pathColor = unhex("FFF61067");
-    int farAwayColor = unhex("FF5CAB7D");
-    int closeToColor = unhex("FFFFE66D");
+    int endColor = unhex("FFFFA987");
+    int pathColor = unhex("FFC1292E");
+    int farAwayColor = unhex("FF3590F3");
+    int closeToColor = unhex("FFCFFCFF");
 
     // set the sizes of the tiles and walls (may change to set with arguments)
 
     int wallStrokeSize = 3;
 
-    int pathColor = unhex("FF00FF00");
     int pathStrokeSize = 3;
 
     // holds the steps for the animation
@@ -61,11 +60,18 @@ public class Graphics extends PApplet {
             stepCounter = 0;
             previousStepTile = maze.maze[maze.startX][maze.startY];
         }
+        if (key == ' '){
+            // pause the maze
+            paused = !paused;
+            if (paused) noLoop();
+            else loop();
+        }
         // redraws on key press to help identify bugs
         redraw();
     }
 
     private void drawMaze() {
+        frameRate(24);
 
         // set the shortest path of the maze (maybe will change to return the stack)
         maze.findShortestPath();
@@ -100,7 +106,7 @@ public class Graphics extends PApplet {
 
                 // set the color of the walls
                 stroke(wallColor);
-                // for each direction saved in each tile
+                // for each direction saved in each til
                 for (Direction dir : t.walls) {
                     // draw a line for the wall based off of the directions
                     switch (dir) {

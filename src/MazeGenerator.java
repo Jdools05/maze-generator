@@ -16,15 +16,15 @@ public class MazeGenerator {
     Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
     // store the width and height of maze
-    int mazeWidth = 50;
-    int mazeHeight = 50;
+    int mazeWidth = size.width / tileSize;
+    int mazeHeight = (size.height - bottomBarHeight) / tileSize;
 
     // store the position of the start
-    int startX = 0;
-    int startY = mazeHeight / 2;
+    int startX = random.nextInt(mazeWidth);
+    int startY = random.nextInt(mazeHeight);
 
     // store the position of the end
-    int exitX = mazeWidth - 1;
+    int exitX = random.nextInt(mazeWidth);
     int exitY = random.nextInt(mazeHeight);
 
     // store the position of a pointer to navigate the maze
@@ -192,8 +192,17 @@ public class MazeGenerator {
 
     // function used to reset and regenerate the maze
     void reload() {
-        // reset the exit y position
+        tileSize = random.nextInt(40) + 20;
+
+        mazeWidth = size.width / tileSize;
+        mazeHeight = (size.height - bottomBarHeight) / tileSize;
+
+        maze = new Tile[mazeWidth][mazeHeight];
+
+        startX = random.nextInt(mazeWidth);
+        startY = random.nextInt(mazeHeight);
         exitY = random.nextInt(mazeHeight);
+        exitX = random.nextInt(mazeWidth);
         // start the reload timer
         long reloadStart = System.nanoTime();
         // reset all the tiles of the maze (could optimize, but it is not crucial)
